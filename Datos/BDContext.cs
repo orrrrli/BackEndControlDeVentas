@@ -18,6 +18,7 @@ namespace Datos
     {
         public DbSet<Categorias> Categorias { get; set; } = null;
         public DbSet<Roles> Roles { get; set; } = null; 
+        public DbSet<Articulos> Articulos { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -40,6 +41,7 @@ namespace Datos
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new CategoriaMap());
             modelBuilder.ApplyConfiguration(new RolesMap());
+            modelBuilder.ApplyConfiguration(new ArticuloMap());
 
         }
 
