@@ -10,6 +10,7 @@ using Entidades.Almacen;
 using Presentacion.Models.Almacen.Categoria;
 using Presentacion.Models.Almacen;
 using Presentacion.Models;
+using Presentacion.Models.Almacen.Articulo;
 
 namespace Presentacion.Controllers
 {
@@ -334,6 +335,20 @@ namespace Presentacion.Controllers
             return Ok();
         }
 
+        #endregion
+
+        #region Listar. GET: api/Categorias/SeleccionaCategoria
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<SeleccionaArticuloViewModel>> SeleccionaCategoria ()
+        {
+            var categoria = await _context.Categorias.Where(a=>a.Estado == true).ToListAsync();
+            return categoria.Select(c => new SeleccionaArticuloViewModel
+            {
+                IdCategorias = c.IdCategorias,
+                nombreCategorias = c.nombreCategorias
+
+            });
+        }
         #endregion
     }
 }

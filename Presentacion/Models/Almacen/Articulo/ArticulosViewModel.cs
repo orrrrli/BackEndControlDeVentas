@@ -13,12 +13,14 @@ namespace Presentacion.Models.Almacen.Articulo
         public decimal precioArticulo { get; set; }
         public int stock { get; set; }
         public string descripcionArticulo { get; set; } = string.Empty;
-        public bool Estado { get; set; } = false;
-        public int idCategoria { get; set; }
+        public bool Estado { get; set; }
+
+        [ForeignKey("IdCategorias")] // Nombre de la propiedad de navegación en la entidad relacionada
+        public int IdCategorias { get; set; }
         public string nombreCategoria { get; set; } // Agrega esta propiedad para almacenar el nombre de la categoría
 
         // Propiedad de navegación para la relación con Categorias
-        [ForeignKey("Categoria")] // Nombre de la propiedad de navegación en la entidad relacionada
-        public Categorias Categoria { get; set; }
+        
+       
     }
 }

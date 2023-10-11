@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entidades.Almacen
 {
@@ -12,6 +13,8 @@ namespace Entidades.Almacen
         [StringLength(250)]
         public string Descripcion { get; set; } = string.Empty;
         public bool Estado { get; set; } = false;
+
+       
 
     }
 }

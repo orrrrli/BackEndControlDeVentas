@@ -16,10 +16,10 @@ namespace Datos.Mapping.Almacen
             builder.Property(t => t.Estado);
 
             // Configuración de la clave foránea IdCategoria
-            builder.Property(t => t.IdCategoria);
+            builder.Property(t => t.IdCategorias);
             builder.HasOne(t => t.Categoria)
                    .WithMany()
-                   .HasForeignKey(t => t.IdCategoria)
+                   .HasForeignKey(t => t.IdCategorias)
                    .OnDelete(DeleteBehavior.Restrict); // Opcional: define la acción de eliminación
         }
     }

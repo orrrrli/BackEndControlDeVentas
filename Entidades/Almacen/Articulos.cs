@@ -12,11 +12,11 @@ namespace Entidades.Almacen
         public decimal precioArticulo { get; set; }
         public int stock { get; set; }
         public string descripcionArticulo { get; set; } = string.Empty;
-        public bool Estado { get; set; } = false;
+        public bool Estado { get; set; }
 
         // Propiedad de navegación para la relación con Categorias
-        [ForeignKey("Categoria")] // Nombre de la propiedad de navegación en la entidad relacionada
-        public int IdCategoria { get; set; }
+        [ForeignKey("IdCategorias")] // Nombre de la propiedad de navegación en la entidad relacionada
+        public int IdCategorias { get; set; }
 
         // Propiedad de navegación a la entidad Categorias (puedes cambiar el nombre si es necesario)
         public Categorias Categoria { get; set; }
