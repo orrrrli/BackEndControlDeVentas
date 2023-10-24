@@ -1,7 +1,9 @@
 ﻿using Datos.Mapping.Almacen;
 using Datos.Usuarios;
+using Datos.Ventas;
 using Entidades.Almacen;
 using Entidades.Usuarios;
+using Entidades.Ventas;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,7 +22,7 @@ namespace Datos
         public DbSet<Roles> Roles { get; set; } = null; 
         public DbSet<Articulos> Articulos { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
-
+        public DbSet <Personas> Personas { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -44,6 +46,7 @@ namespace Datos
             modelBuilder.ApplyConfiguration(new RolesMap());
             modelBuilder.ApplyConfiguration(new ArticuloMap());
             modelBuilder.ApplyConfiguration(new UsuarioMap());
+            modelBuilder.ApplyConfiguration(new PersonasMap());
 
 
         }

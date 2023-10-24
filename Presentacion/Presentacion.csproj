@@ -22,8 +22,4 @@
     <ProjectReference Include="..\Datos\Datos.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Ventas\" />
-  </ItemGroup>
-
 </Project>

@@ -22,7 +22,7 @@ namespace Presentacion.Controllers
             _context = context;
         }
 
-        #region GET: api/Usuarios?ListarUsusarios
+        #region GET: api/Usuarios/ListarUsusarios
         [HttpGet("[action]")]
         public async Task<ActionResult<IEnumerable<UsuarioViewModel>>> ListarUsuarios()
         {

@@ -25,6 +25,18 @@ namespace Presentacion.Controllers
             _context = context;
         }
 
+        #region SELECCION ROL
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<SeleccionaRolViewModel>> SeleccionarRol()
+        {
+            var rol = await _context.Roles.Where(a => a.estado == true).ToArrayAsync();
+            return rol.Select(c => new SeleccionaRolViewModel
+            {
+                IdRol = c.IdRol,
+                NombreRol = c.nombreRol,
+            });
+        }
+        #endregion
         // GET: api/Roles
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Roles>>> GetRoles()
@@ -302,7 +314,7 @@ namespace Presentacion.Controllers
 
         // ACTIVAR ROLES//
         [HttpPut("[action]/{id}")]
-        public async Task<IActionResult> ActivarRoles([FromRoute] int id)
+        public async Task<IActionResult> ActivarRol([FromRoute] int id)
         {
             if (id < 0)
             {
