@@ -43,6 +43,26 @@ namespace Presentacion.Controllers
         }
         #endregion
 
+        #region Listar. GET: api/Personas/ListarClientes
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<PersonaViewModel>> ListarProveedor()
+        {
+            var persona = await _context.Personas.Where(p => p.TipoPersona == "Proveedor").ToListAsync();
+            return persona.Select(p => new PersonaViewModel
+            {
+                IdPersona = p.IdPersona,
+                TipoPersona = p.TipoPersona,
+                NombrePersona = p.NombrePersona,
+                TipoDocumento = p.TipoDocumento,
+                NumeroDocumento = p.NumeroDocumento,
+                DireccionPersona = p.DireccionPersona,
+                TelefonoPersona = p.TelefonoPersona,
+                EmailPersona = p.EmailPersona
+            });
+
+        }
+        #endregion
+
         #region POST: api/Personas/InsertarPersonas
 
         // POST: api/Usuarios

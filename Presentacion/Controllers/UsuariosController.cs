@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Datos;
 using Entidades.Usuarios;
 using Presentacion.Models.Usuarios.Usuarios;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Presentacion.Controllers
 {
@@ -16,10 +20,12 @@ namespace Presentacion.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly BDContext _context;
+        private readonly IConfiguration _configuracion;
 
-        public UsuariosController(BDContext context)
+        public UsuariosController(BDContext context, IConfiguration configuracion)
         {
             _context = context;
+            _configuracion = configuracion;
         }
 
         #region GET: api/Usuarios/ListarUsusarios
@@ -249,7 +255,7 @@ namespace Presentacion.Controllers
             return NoContent();
         }
         #endregion
-      
+
         public static void CreaPasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
@@ -258,6 +264,66 @@ namespace Presentacion.Controllers
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
         }
+        private string GenerarToken (List<Claim> claims)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuracion["Jwt:Key"]));
+            var credenciales = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                _configuracion["Jnt:Issuer"],
+                _configuracion["Jwt:Issuer"],
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials:credenciales,
+                claims: claims);
+            return new JwtSecurityTokenHandler().WriteToken(token);
+
+        }
+        private bool VerificaPassword(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+            {
+                var nuevoPasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return new ReadOnlySpan<byte>(passwordHash).SequenceEqual(new ReadOnlySpan<byte>(nuevoPasswordHash));
+            }
+        }
+
+        #region POST: api/Usuarios/Login
+        [HttpPost("[action]")]
+
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            var email = model.Email.ToUpper(); //En otro codigo lo tengo sin el ToUpper
+            var usuario = await _context.Usuario.Where(u => u.Estado == true).Include(u => u.Rol).FirstOrDefaultAsync(u => u.Email == email);
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+            var isValido = VerificaPassword(model.Password, usuario.PasswordHash, usuario.PasswordSalt);
+            if (!isValido)
+            {
+                return BadRequest();
+            }
+            var claim = new List<Claim>
+            {
+                //Para backend
+                new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
+                new Claim(ClaimTypes.Email, email),
+                new Claim (ClaimTypes.Role, usuario.Rol.nombreRol),
+
+                //FrontEnd
+                new Claim ("IdUsuario", usuario.IdUsuario.ToString()),
+                new Claim ("Rol", usuario.Rol.nombreRol),
+                new Claim("NombreUsuario", usuario.NombreUsuario)
+
+            };
+
+            return Ok(
+                new { token = GenerarToken(claim) }
+                );
+        }
+
+        #endregion
 
     }
 
